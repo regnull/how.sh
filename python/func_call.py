@@ -20,6 +20,37 @@ tools=[
             },
         },
     },
+    {
+        'type': 'function',
+        'function': {
+            'name': 'get_current_directory',
+            'description': 'Get the current directory',
+            'parameters': {
+            },
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            'name': 'go_one_directory_up',
+            'description': 'Go one directory up',
+            'parameters': {
+            },
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            'name': 'go_to_directory',
+            'description': 'Go to a specific directory',
+            'parameters': {
+                'path': {
+                    'type': 'string',
+                    'description': 'The path to the directory to go to',
+                },
+            },
+        },
+    },
 ]
 
 def get_running_processes():
@@ -39,19 +70,34 @@ def get_running_processes():
 
 def get_files():
     files_info = []
-    for root, dirs, files in os.walk('.'):
-        for file in files:
-            try:
-                file_path = os.path.join(root, file)
-                size = os.path.getsize(file_path)
+    for file in os.listdir('.'):
+        try:
+            if os.path.isfile(file):  # Only include files, not directories
+                size = os.path.getsize(file)
                 files_info.append({
-                    'path': file_path,
+                    'path': file,
                     'size': f"{size / 1024:.2f} KB"
                 })
-            except (OSError, IOError):
-                continue
+            else:
+                files_info.append({
+                    'path': file,
+                    'size': 'Directory'
+                })
+        except (OSError, IOError):
+            continue
     
     return f"Files: {files_info}"
+
+def get_current_directory():
+    return f"Current directory: {os.getcwd()}"
+
+def go_one_directory_up():
+    os.chdir('..')
+    return f"Current directory: {os.getcwd()}"
+
+def go_to_directory(path):
+    os.chdir(path)
+    return f"Current directory: {os.getcwd()}"
 
 def call_tool(tool_name, tool_args):
     print(f"Calling tool {tool_name} with arguments {tool_args}")
@@ -59,16 +105,23 @@ def call_tool(tool_name, tool_args):
         return get_running_processes()
     elif tool_name == 'get_files':
         return get_files()
+    elif tool_name == 'get_current_directory':
+        return get_current_directory()
+    elif tool_name == 'go_one_directory_up':
+        return go_one_directory_up()
+    elif tool_name == 'go_to_directory':
+        return go_to_directory(tool_args['path'])
     else:
         return "Tool not found"
 
 def main():
     conversation_history = [{'role': 'system', 'content': 
-        'You are a helpful assistant. You can use the get_running_processes tool to ' + 
-        'get the current running processes on the system.' +
-        'Call this tool only when asked to get the current running processes on the system.' +
-        'Do not call this tool unless asked. If the user provides a message that has nothing to ' +
-        'do with the current running processes, do not call this tool, but answer the user\'s question.'
+        'You are a computer running Linux-like operating system. ' + 
+        'You can answer the user questions and perform tasks on the system. ' +
+        'You can use the provided tools to perform tasks on the system. ' +
+        'Use tools only when necessary. If the user request does not require a tool, ' +
+        'just answer the question or perform the task without using tools.' +
+        'If user says something in a conversational way, reply in the same way.'
     }]
     while True:
         user_input = input("You: ")

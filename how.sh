@@ -15,7 +15,7 @@ fi
 
 # Check for the -y flag and optional model name
 auto_execute=false
-MODEL="llama3"
+MODEL="${HOW_SH_MODEL:-llama3}"
 while [[ "$1" =~ ^- ]]; do
   case "$1" in
     -y)
@@ -34,12 +34,24 @@ while [[ "$1" =~ ^- ]]; do
   esac
 done
 
+# Check if the model is available
+if ! ollama list | grep -q "^$MODEL:"; then
+  echo "Error: Model '$MODEL' is not available in Ollama."
+  echo "Available models:"
+  ollama list
+  echo "You can download it with: ollama pull $MODEL"
+  exit 1
+fi
+
 # Combine all arguments into a single question
 QUESTION="$*"
 
-# Construct the prompt for Ollama
-PROMPT="Please provide a single Linux command to accomplish 
-the following task: $QUESTION. Only output the command as a single line, without quotes of any kind."
+PROMPT="I want to perform a task on a Linux system. The task is as follows: $QUESTION. 
+Generate a single Linux command that will achieve this. If the task is complex or involves 
+multiple steps, provide a pipeline that includes multiple commands. 
+Ensure the command is safe, and follows the best practices.
+Only output the command as a single line as plain text, without quotes of any kind.
+Do not use markdown or any other formatting."
 
 # Send the prompt to Ollama and capture the response
 COMMAND=$(echo "$PROMPT" | ollama run $MODEL)

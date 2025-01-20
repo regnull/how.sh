@@ -11,7 +11,7 @@ ollama must be installed. You can install it from https://ollama.ai
 You might also want to pre-load the models you want to use:
 
 ```bash
-$ ollama run llama3
+$ ollama pull llama3
 ```
 
 how.sh uses llama3 by default, but you can use [any other model supported by ollama](https://ollama.ai/library).
@@ -106,3 +106,9 @@ Executing: cowsay -f vader "Why was the math book sad? Because it had too many p
 
                Cowth Vader
 ```
+
+```bash
+$ ./how.sh find large files in the current directory modified within the last 30 days and compress them into a single archive
+Generated command:  find . -type f -size +10M -mtime -30 | xargs tar czvf large_files_archive.tar.gz
+```
+
