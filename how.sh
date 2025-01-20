@@ -61,7 +61,7 @@ echo "Generated command: $COMMAND"
 if [ "$auto_execute" = true ]; then
   echo "Executing: $COMMAND"
   eval "$COMMAND"
-  exit 0
+  exit $?
 fi
 
 # Request user confirmation
