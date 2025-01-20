@@ -30,17 +30,27 @@ If you enter `e`, the script will explain what the command does:
 ./how.sh find and delete files older than 30 days
 Generated command: find . -type f -mtime +30 -exec rm {} \;
 Execute (e for explain)? (y/n/e): e
-This command finds files in the current directory and all its subdirectories that are older than 30 days and deletes them.
+This command finds files in the current directory and all its subdirectories that are 
+older than 30 days and deletes them.
 
 Here's a breakdown of what each part of the command does:
 
 * `find`: This is the command to search for files.
-* `.`, the current directory: The dot at the beginning of the command tells find to start searching in the current directory.
-* `-type f`: This option tells find to only consider files, not directories or other types of files.
-* `-mtime +30`: This option tells find to only consider files that are older than 30 days. The `+` sign is used to specify a range of times, where the start time is less than the specified time (in this case, 30 days). In other words, this will match any file with a modification time more than 30 days ago.
-* `-exec rm {} \;`: This option tells find to execute a command on each matching file. The `rm` command is used to delete the file. The `{}` placeholder represents the name of the file that was found, and the `\;` at the end of the command is needed because the semicolon (`;`) is a special character in the shell and needs to be escaped.
+* `.`, the current directory: The dot at the beginning of the command tells 
+find to start searching in the current directory.
+* `-type f`: This option tells find to only consider files, not directories 
+or other types of files.
+* `-mtime +30`: This option tells find to only consider files that are older than 30 days. 
+The `+` sign is used to specify a range of times, where the start time is less than the 
+specified time (in this case, 30 days). In other words, this will match any file with a 
+modification time more than 30 days ago.
+* `-exec rm {} \;`: This option tells find to execute a command on each matching file. 
+The `rm` command is used to delete the file. The `{}` placeholder represents the name of 
+the file that was found, and the `\;` at the end of the command is needed because the 
+semicolon (`;`) is a special character in the shell and needs to be escaped.
 
-So, when you put it all together, this command will find all files in the current directory and its subdirectories that are older than 30 days and delete them.
+So, when you put it all together, this command will find all files in the 
+current directory and its subdirectories that are older than 30 days and delete them.
 
 Generated command: find . -type f -mtime +30 -exec rm {} \;
 Execute (e for explain)? (y/n/e):
