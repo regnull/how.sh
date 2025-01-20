@@ -42,7 +42,7 @@ PROMPT="Please provide a single Linux command to accomplish
 the following task: $QUESTION. Only output the command as a single line, without quotes of any kind."
 
 # Send the prompt to Ollama and capture the response
-COMMAND=$(echo "$PROMPT" | ollama run llama3)
+COMMAND=$(echo "$PROMPT" | ollama run $MODEL)
 
 # Check if a command was generated
 if [ -z "$COMMAND" ]; then
@@ -73,7 +73,7 @@ while true; do
     Output plain text, no markdown.
     The command is: $COMMAND"
 
-    EXPLANATION=$(echo "$PROMPT" | ollama run llama3)
+    EXPLANATION=$(echo "$PROMPT" | ollama run $MODEL)
     echo "$EXPLANATION"
     echo ""
   else
