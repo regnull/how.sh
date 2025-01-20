@@ -31,3 +31,20 @@ Just download the script and run it. If you want to can add an alias:
 ```bash
 alias how="~/path/to/how.sh"
 ```
+
+## More examples
+
+```bash
+./how.sh find 10 biggest files in a directory
+Generated command: find . -type f -wholename './*' | sort -n -k5 | head -n 10
+```
+
+```bash
+./how.sh find my external ip address
+Generated command: curl ifconfig.me
+```
+
+```bash
+./how.sh cowsay hello
+Generated command: cowsay -f tux "hello"
+```
