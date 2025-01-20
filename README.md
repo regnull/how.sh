@@ -1,5 +1,9 @@
 # how.sh - Create and execute shell commands using Ollama
 
+## Prerequisites
+
+ollama must be installed. You can install it from https://ollama.ai
+
 ## Usage
 
 ```bash
