@@ -26,7 +26,7 @@ Execute (e for explain)? (y/n/e):
 
 If you enter `e`, the script will explain what the command does:
 
-```bash
+```text
 ./how.sh find and delete files older than 30 days
 Generated command: find . -type f -mtime +30 -exec rm {} \;
 Execute (e for explain)? (y/n/e): e
