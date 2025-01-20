@@ -38,10 +38,20 @@ def get_running_processes():
     return f"Running processes: {processes}"
 
 def get_files():
-    files = []
-    for file in os.listdir():
-        files.append(file)
-    return f"Files: {files}"
+    files_info = []
+    for root, dirs, files in os.walk('.'):
+        for file in files:
+            try:
+                file_path = os.path.join(root, file)
+                size = os.path.getsize(file_path)
+                files_info.append({
+                    'path': file_path,
+                    'size': f"{size / 1024:.2f} KB"
+                })
+            except (OSError, IOError):
+                continue
+    
+    return f"Files: {files_info}"
 
 def call_tool(tool_name, tool_args):
     print(f"Calling tool {tool_name} with arguments {tool_args}")

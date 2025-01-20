@@ -55,21 +55,34 @@ if [ -z "$COMMAND" ]; then
   exit 1
 fi
 
-# Display the generated command to the user
-echo "Generated command: $COMMAND"
 
-if [ "$auto_execute" = true ]; then
-  echo "Executing: $COMMAND"
-  eval "$COMMAND"
-  exit $?
-fi
+while true; do
+  echo "Generated command: $COMMAND"
 
-# Request user confirmation
-read -p "Do you want to execute this command? (y/n): " CONFIRMATION
+  if [ "$auto_execute" = true ]; then
+    echo "Executing: $COMMAND"
+    eval "$COMMAND"
+    exit $?
+  fi
 
-if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
-  echo "Executing: $COMMAND"
-  eval "$COMMAND"
-else
-  echo "Command execution canceled."
-fi
+  # Request user confirmation
+  read -p "Execute (e for explain)? (y/n/e): " CONFIRMATION
+
+  if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
+    echo "Executing: $COMMAND"
+    eval "$COMMAND"
+    exit $?
+  elif [[ "$CONFIRMATION" =~ ^[Ee]$ ]]; then
+    PROMPT="Please explain what does the following command do.
+    If it's a sequence of commands, explain each command.
+    Output plain text, no markdown.
+    The command is: $COMMAND"
+
+    EXPLANATION=$(echo "$PROMPT" | ollama run llama3)
+    echo "$EXPLANATION"
+    echo ""
+  else
+    echo "Command execution canceled."
+    exit 1
+  fi
+done
