@@ -10,7 +10,7 @@ You might also want to pre-load the models you want to use:
 $ ollama run llama3
 ```
 
-how.sh uses llama3 by default, but you can use any other model supported by ollama.
+how.sh uses llama3 by default, but you can use (any other model supported by ollama)[https://ollama.com/library].
 
 ## Usage
 
