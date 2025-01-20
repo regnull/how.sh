@@ -33,11 +33,6 @@ while [[ "$1" =~ ^- ]]; do
       ;;
   esac
 done
-auto_execute=false
-if [ "$1" == "-y" ]; then
-  auto_execute=true
-  shift
-fi
 
 # Combine all arguments into a single question
 QUESTION="$*"
