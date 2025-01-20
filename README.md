@@ -4,6 +4,14 @@
 
 ollama must be installed. You can install it from https://ollama.ai
 
+You might also want to pre-load the models you want to use:
+
+```bash
+$ ollama run llama3
+```
+
+how.sh uses llama3 by default, but you can use any other model supported by ollama.
+
 ## Usage
 
 ```bash
