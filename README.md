@@ -1,5 +1,9 @@
 # how.sh - Create and execute shell commands using Ollama
 
+## Use at your own risk
+
+This script is experimental and may not work as expected. Use at your own risk.
+
 ## Prerequisites
 
 ollama must be installed. You can install it from https://ollama.ai
