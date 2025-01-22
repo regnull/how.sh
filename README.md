@@ -143,3 +143,10 @@ $ ./how.sh find large files in the current directory modified within the last 30
 Generated command:  find . -type f -size +10M -mtime -30 | xargs tar czvf large_files_archive.tar.gz
 ```
 
+```terminal
+$ ./how.sh create a file named bob containing the current timestamp
+Generated command:  echo $(date +"%Y-%m-%d_%H:%M:%S") > bob
+Confirm (y/n/e/?) >> y
+Executing:  echo $(date +"%Y-%m-%d_%H:%M:%S") > bob
+```
+
