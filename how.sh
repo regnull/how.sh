@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -o pipefail
 
 # Add cleanup trap at the start
 cleanup() {
@@ -80,6 +80,7 @@ Create a command to accomplish the following task: $QUESTION
 Output only the command as a single line of plain text, with no 
 quotes, formatting, or additional commentary. Do not use markdown or any 
 other formatting. Do not include the command into a code block.
+Don't include the shell itself (bash, zsh, etc.) in the command.
 "
 
 output_file=$(mktemp)
@@ -110,8 +111,32 @@ while true; do
   if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
     echo "Executing: $COMMAND"
     OUTPUT=$(eval "$COMMAND")
+    exit_code=$?
     echo "$OUTPUT"
-    exit $?
+    if [ $exit_code -ne 0 -a $exit_code -ne 141 ]; then
+      echo "Command failed with exit code $exit_code"
+      echo "I can attempt to analyze the error and provide a fix."
+      read -p "Try to fix the command (y/n) >> " ANALYZE_ERROR
+      if [[ "$ANALYZE_ERROR" =~ ^[Yy]$ ]]; then
+        PROMPT="The following command has failed: $COMMAND.
+        The output was: $OUTPUT
+        Understand why did the command fail, and modify it to make it work.
+        The shell is $SHELL.
+        The system is $UNAME (generated using: uname -a).
+        Output only the command as a single line of plain text, with no 
+        quotes, formatting, or additional commentary. Do not use markdown or any 
+        other formatting. Do not include the command into a code block.
+        Don't include the shell itself (bash, zsh, etc.) in the command.
+        "
+        output_file=$(mktemp)
+        llm -m $MODEL "$PROMPT" > $output_file 2>&1 &
+        spinner
+        COMMAND=$(cat $output_file)
+        rm -f $output_file
+      fi
+    else
+      exit $exit_code
+    fi
   elif [[ "$CONFIRMATION" =~ ^[Ee]$ ]]; then
     PROMPT="Please explain the functionality of the following command.
 If it consists of multiple commands or a pipeline, provide a detailed explanation for each part.
