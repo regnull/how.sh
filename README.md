@@ -190,3 +190,15 @@ Executing: ps aux | sort -rk 4 | head -n 2 | tail -n 1
 regnull           4490   0.0  3.0 1624091136 568288   ??  S    Sun09AM  60:50.79 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/131.0.6778.265/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer) --type=renderer --string-annotations --enable-chrome-cart --lang=en-US --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=75 --time-ticks-at-unix-epoch=-1737295686309350 --launch-time-ticks=218700919 --shared-files --field-trial-handle=1718379636,r,5166342679572925582,4154369641191108277,262144 --variations-seed-version=20250117-130131.443000 --seatbelt-client=103
 ```
 
+### How.sh Scripting
+
+If you like to live dangerously, you can use how.sh in your bash scripts, like so:
+
+```bash
+#!/bin/bash
+set -e
+../how.sh -y create a file named bob which contains the current timestamp 
+../how.sh -y tell me what does file named bob contain
+../how.sh -y delete file named bob
+```
+
