@@ -38,8 +38,10 @@ Verify that everything works:
 
 ```terminal
 llm -m ollama/deepseek-coder-v2 "list files in the current directory"
+```
 
-how.sh uses llama3 by default, but you can use [any other model supported by ollama](https://ollama.ai/library).
+how.sh uses deepseek-coder-v2 by default, but you can use [any other model supported by ollama](https://ollama.ai/library).
+You can also change the default model (see below).
 
 ## Usage
 
