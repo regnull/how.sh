@@ -54,7 +54,7 @@ If you enter `e`, the script will explain what the command does:
 ```text
 ./how.sh find and delete files older than 30 days
 Generated command: find . -type f -mtime +30 -exec rm {} \;
-Execute (e for explain)? (y/n/e): e
+Confirm (y/n/e/?) >> e
 This command finds files in the current directory and all its subdirectories that are 
 older than 30 days and deletes them.
 
@@ -91,6 +91,12 @@ You can specify the model to use with the `-m` flag.
 
 ```bash
 $ ./how.sh -y -m llama3 "find and delete files older than 30 days"
+```
+
+To specify the default model, you can set the `HOW_SH_MODEL` environment variable:
+
+```bash
+export HOW_SH_MODEL=llama3
 ```
 
 ## Installation
