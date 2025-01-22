@@ -152,6 +152,14 @@ Confirm (y/n/e/?) >> y
 Executing:  echo $(date +"%Y-%m-%d_%H:%M:%S") > bob
 ```
 
+```terminal
+$ ./how.sh -m 4o what is the current weather
+Generated command: curl -s "https://wttr.in/?format=3"
+Confirm (y/n/e/?) >> y
+Executing: curl -s "https://wttr.in/?format=3"
+Secaucus, New Jersey, United States: ☀️   +19°F
+```
+
 ## Experimental features
 
 ### Fixing errors
@@ -204,7 +212,7 @@ set -e
 
 If you run this, and you are lucky, you will get the following output:
 
-```teminal
+```terminal
 ./bob.sh
 Generated command:  echo $(date +"%Y-%m-%d %H:%M:%S") > bob
 Executing:  echo $(date +"%Y-%m-%d %H:%M:%S") > bob
