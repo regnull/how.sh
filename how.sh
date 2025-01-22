@@ -133,6 +133,8 @@ while true; do
         spinner
         COMMAND=$(cat $output_file)
         rm -f $output_file
+      else
+        exit $exit_code
       fi
     else
       exit $exit_code
