@@ -202,3 +202,16 @@ set -e
 ../how.sh -y delete file named bob
 ```
 
+If you run this, and you are lucky, you will get the following output:
+
+```teminal
+./bob.sh
+Generated command:  echo $(date +"%Y-%m-%d %H:%M:%S") > bob
+Executing:  echo $(date +"%Y-%m-%d %H:%M:%S") > bob
+Generated command:  cat bob
+Executing:  cat bob
+2025-01-22 17:16:43
+Generated command:  rm -f bob
+Executing:  rm -f bob
+```
+
