@@ -1,10 +1,17 @@
 #!/bin/bash
 set -e
 
-# Ensure Ollama is installed
-if ! command -v ollama &> /dev/null; then
-  echo "Error: Ollama is not installed. Please install it from https://ollama.ai to use this script."
-  exit 1
+# Add cleanup trap at the start
+cleanup() {
+    rm -f "$output_file" 2>/dev/null
+}
+trap cleanup EXIT
+
+# Ensure llm CLI is installed
+if ! command -v llm &> /dev/null; then
+    echo "Error: 'llm' CLI is not installed. Please install it using:"
+    echo "pip install llm"
+    exit 1
 fi
 
 # Ensure the script is called with a question
@@ -13,9 +20,10 @@ if [ "$#" -eq 0 ]; then
   exit 1
 fi
 
-# Check for the -y flag and optional model name
+DEFAULT_MODEL="deepseek-coder-v2"
+
 auto_execute=false
-MODEL="${HOW_SH_MODEL:-llama3}"
+MODEL="${HOW_SH_MODEL:-$DEFAULT_MODEL}"
 while [[ "$1" =~ ^- ]]; do
   case "$1" in
     -y)
@@ -34,34 +42,58 @@ while [[ "$1" =~ ^- ]]; do
   esac
 done
 
-# Check if the model is available
-if ! ollama list | grep -q "^$MODEL:"; then
-  echo "Error: Model '$MODEL' is not available in Ollama."
-  echo "Available models:"
-  ollama list
-  echo "You can download it with: ollama pull $MODEL"
-  exit 1
-fi
-
 # Combine all arguments into a single question
 QUESTION="$*"
 
-PROMPT="I want to perform a task on a Linux system. The task is as follows: $QUESTION. 
-Generate a single Linux command that will achieve this. If the task is complex or involves 
-multiple steps, provide a pipeline that includes multiple commands. 
-Ensure the command is safe, and follows the best practices.
-Only output the command as a single line as plain text, without quotes of any kind.
-Do not use markdown or any other formatting."
+UNAME=$(uname -a)
 
-# Send the prompt to Ollama and capture the response
-COMMAND=$(echo "$PROMPT" | ollama run $MODEL)
+SHELL=$(ps -p $$ -o command= | awk '{print $1}')
+
+spinner() {
+  pid=$!
+  local delay=0.2
+  while kill -0 "$pid" 2>/dev/null; do for X in '◴' '◷' '◶' '◵' ; do echo -en "\b$X" ; sleep $delay ; done ; done
+  printf "\r"  # Clear the spinner
+}
+
+
+PROMPT="
+You are an experienced Linux engineer with expertise in all Linux 
+commands and their 
+functionality across different Linux systems.
+
+Given a task, generate a single command or a pipeline 
+of commands that accomplish the task efficiently.
+This command is to be executed in the current shell, $SHELL.
+For complex tasks or those requiring multiple 
+steps, provide a pipeline of commands. 
+Ensure all commands are safe, follow best practices, and are compatible with 
+the system. Make sure that the command flags used are supported by the binaries
+usually available in the current system or shell.
+If a command is not compatible with the 
+system or shell, provide a suitable alternative.
+
+The system information is: $UNAME (generated using: uname -a).
+
+Create a command to accomplish the following task: $QUESTION
+
+Output only the command as a single line of plain text, with no 
+quotes, formatting, or additional commentary. Do not use markdown or any 
+other formatting. Do not include the command into a code block.
+"
+
+output_file=$(mktemp)
+llm -m $MODEL "$PROMPT" > $output_file 2>&1 &
+spinner
+# Despite our best efforts, the output might still contain ```, so we remove it
+COMMAND=$(cat $output_file | sed 's/```//g')
+rm -f $output_file
 
 # Check if a command was generated
 if [ -z "$COMMAND" ]; then
   echo "Error: No command was generated."
   exit 1
 fi
-
 
 while true; do
   echo "Generated command: $COMMAND"
@@ -73,20 +105,31 @@ while true; do
   fi
 
   # Request user confirmation
-  read -p "Execute (e for explain)? (y/n/e): " CONFIRMATION
+  read -p "Confirm (y/n/e/?) >> " CONFIRMATION
 
   if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
     echo "Executing: $COMMAND"
-    eval "$COMMAND"
+    OUTPUT=$(eval "$COMMAND")
+    echo "$OUTPUT"
     exit $?
   elif [[ "$CONFIRMATION" =~ ^[Ee]$ ]]; then
-    PROMPT="Please explain what does the following command do.
-    If it's a sequence of commands, explain each command.
-    Output plain text, no markdown.
-    The command is: $COMMAND"
+    PROMPT="Please explain the functionality of the following command.
+If it consists of multiple commands or a pipeline, provide a detailed explanation for each part.
+Output the explanation as plain text without any formatting or additional syntax.
+The command to explain is: $COMMAND"
 
-    EXPLANATION=$(echo "$PROMPT" | ollama run $MODEL)
+    output_file=$(mktemp)
+    llm -m $MODEL "$PROMPT" > $output_file 2>&1 &
+    spinner
+    EXPLANATION=$(cat $output_file)
+    rm -f $output_file
     echo "$EXPLANATION"
+    echo ""
+  elif [[ "$CONFIRMATION" = "?" ]]; then
+    echo "y - confirm and execute"
+    echo "n - cancel"
+    echo "e - explain the command"
+    echo "? - show this help"
     echo ""
   else
     echo "Command execution canceled."

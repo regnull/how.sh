@@ -1,4 +1,8 @@
-# how.sh - Create and execute shell commands using Ollama
+# how.sh - Create and execute shell commands using LLM
+
+Use any LLM supported by [LLM CLI](https://llm.datasette.io/en/stable/index.html),
+including OpenAI LLMs or local models provided by Ollama and any other LLM engines 
+supported by LLM CLI.
 
 ## Use at your own risk
 
@@ -6,13 +10,34 @@ This script is experimental and may not work as expected. Use at your own risk.
 
 ## Prerequisites
 
-ollama must be installed. You can install it from https://ollama.ai
+### Install llm CLI
 
-You might also want to pre-load the models you want to use:
+Follow the instructions at https://llm.datasette.io/en/stable/index.html.
 
-```bash
-$ ollama pull llama3
+### [Optional] Install Ollama and Ollama llm plugin
+
+You don't have to do this unless you want to use Ollama models hosted on your own machine.
+Depending on the LLM you use, your results may vary. Currently, this script is mostly tested
+with Ollama-hosted deepseek-coder-v2 model.
+
+To install Ollama, follow the instructions at https://ollama.com/download.
+
+To use deepseek-coder-v2 model, you need to pre-load it:
+
+```terminal
+ollama pull deepseek-coder-v2
 ```
+
+After installing Ollama, install the Ollama llm plugin:
+
+```terminal
+pip install llm-ollama
+```
+
+Verify that everything works:
+
+```terminal
+llm -m ollama/deepseek-coder-v2 "list files in the current directory"
 
 how.sh uses llama3 by default, but you can use [any other model supported by ollama](https://ollama.ai/library).
 
@@ -21,7 +46,7 @@ how.sh uses llama3 by default, but you can use [any other model supported by oll
 ```bash
 $ ./how.sh find and delete files older than 30 days
 Generated command: find . -type f -mtime +30 -exec rm {} \;
-Execute (e for explain)? (y/n/e):
+Confirm (y/n/e/?) >>
 ```
 
 If you enter `e`, the script will explain what the command does:
@@ -91,7 +116,7 @@ Generated command: curl ifconfig.me
 ```bash
 $ ./how.sh cowsay a joke
 Generated command: cowsay -f vader "Why was the math book sad? Because it had too many problems."
-Execute (e for explain)? (y/n/e): y
+Confirm (y/n/e/?) >> y
 Executing: cowsay -f vader "Why was the math book sad? Because it had too many problems."
  _______________________________________
 / Why was the math book sad? Because it \
