@@ -101,7 +101,9 @@ export HOW_SH_MODEL=llama3
 
 ## Installation
 
-Just download the script and run it. If you want to can add an alias:
+Clone this repository and run the script from there.
+
+If you want, you can add an alias:
 
 ```bash
 alias how="~/path/to/how.sh"
