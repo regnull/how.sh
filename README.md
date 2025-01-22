@@ -123,7 +123,7 @@ $ ./how.sh find my external ip address
 Generated command: curl ifconfig.me
 ```
 
-```bash
+```terminal
 $ ./how.sh cowsay a joke
 Generated command: cowsay -f vader "Why was the math book sad? Because it had too many problems."
 Confirm (y/n/e/?) >> y
