@@ -202,7 +202,10 @@ regnull           4490   0.0  3.0 1624091136 568288   ??  S    Sun09AM  60:50.79
 
 ### How.sh Scripting
 
-If you like to live dangerously, you can use how.sh in your bash scripts, like so:
+Would you like to write scripts by explaining what you want to do using normal language instead of obscure and complex shell commands?
+If your answer is "OMG, NO!", you are right, of course. 
+
+But, if you like to live dangerously, you can use how.sh in your bash scripts, like so:
 
 ```bash
 #!/bin/bash
